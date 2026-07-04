@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benim Güzel Güneşim ☀️</title>
+    <style>
+        :root {
+            --bg-color: #ffeef2;
+            --text-color: #d63384;
+            --rabbit-body: #f0f0f0;
+            --rabbit-pink: #ffb6c1;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            text-align: center;
+            user-select: none;
+        }
+
+        /* --- Animasyon Alanı --- */
+        .stage {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* Tavşan Tasarımları (CSS ile Çizim) */
+        .rabbit {
+            position: relative;
+            width: 70px;
+            height: 90px;
+            background: var(--rabbit-body);
+            border-radius: 40px 40px 30px 30px;
+            transition: all 0.8s ease-in-out;
+            box-shadow: inset -5px -5px 0px rgba(0,0,0,0.05);
+        }
+
+        .rabbit::before, .rabbit::after { /* Kulaklar */
+            content: '';
+            position: absolute;
+            top: -35px;
+            width: 18px;
+            height: 45px;
+            background: var(--rabbit-body);
+            border-radius: 50% 50% 0 0;
+            box-shadow: inset 0 5px 0 var(--rabbit-pink);
+        }
+        .rabbit-left::before { left: 10px; transform: rotate(-5px); }
+        .rabbit-left::after { right: 10px; transform: rotate(5px); }
+        .rabbit-right::before { left: 10px; transform: rotate(-5px); }
+        .rabbit-right::after { right: 10px; transform: rotate(5px); }
+
+        .eye {
+            position: absolute;
+            top: 30px;
+            width: 7px;
+            height: 7px;
+            background: #333;
+            border-radius: 50%;
+        }
+        .rabbit-left .eye-left { left: 18px; }
+        .rabbit-left .eye-right { right: 18px; }
+        .rabbit-right .eye-left { left: 18px; }
+        .rabbit-right .eye-right { right: 18px; }
+
+        .cheek {
+            position: absolute;
+            top: 38px;
+            width: 12px;
+            height: 6px;
+            background: var(--rabbit-pink);
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+        .rabbit-left .cheek-left { left: 10px; }
+        .rabbit-left .cheek-right { right: 10px; }
+        .rabbit-right .cheek-left { left: 10px; }
+        .rabbit-right .cheek-right { right: 10px; }
+
+        /* Kollar */
+        .arm {
+            position: absolute;
+            top: 45px;
+            width: 25px;
+            height: 14px;
+            background: var(--rabbit-body);
+            border-radius: 10px;
+            transition: all 0.8s ease-in-out;
+        }
+        .rabbit-left .arm { right: -10px; transform: rotate(15px); transform-origin: left center; }
+        .rabbit-right .arm { left: -10px; transform: rotate(-15px); transform-origin: right center; }
+
+        /* Konumlandırma */
+        .rabbit-left { margin-right: 40px; }
+        .rabbit-right { background: #e6e6e6; } /* Hafif farklı ton */
+        .rabbit-right::before, .rabbit-right::after { background: #e6e6e6; }
+
+        /* --- Sarılma Durumu (CSS Aktif Sınıfı) --- */
+        .stage.hugged .rabbit-left {
+            transform: translateX(25px);
+        }
+        .stage.hugged .rabbit-right {
+            transform: translateX(-25px);
+        }
+        .stage.hugged .rabbit-left .arm {
+            transform: rotate(-30px) scaleX(1.3);
+            right: -15px;
+        }
+        .stage.hugged .rabbit-right .arm {
+            transform: rotate(30px) scaleX(1.3);
+            left: -15px;
+        }
+
+        /* Teşekkür Pankartı */
+        .banner {
+            position: absolute;
+            bottom: 110px;
+            background: #fff;
+            color: #ff4757;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .stage.hugged .banner {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* --- Metin ve Butonlar --- */
+        .love-text {
+            color: var(--text-color);
+            font-size: 22px;
+            font-weight: 600;
+            margin: 20px;
+            max-width: 80%;
+            line-height: 1.5;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .checkbox-container {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .checkbox-container:active {
+            transform: scale(0.95);
+        }
+
+        .checkbox-container input {
+            display: none;
+        }
+
+        .custom-box {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--text-color);
+            border-radius: 6px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .checkbox-container input:checked + .custom-box {
+            background-color: var(--text-color);
+        }
+
+        .custom-box::after {
+            content: '❤';
+            color: white;
+            font-size: 12px;
+            display: none;
+        }
+        .checkbox-container input:checked + .custom-box::after {
+            display: block;
+        }
+
+        .box-label {
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Kalp Yağmuru Efekti */
+        .heart {
+            position: fixed;
+            color: #ff4d6d;
+            font-size: 20px;
+            animation: fall linear forwards;
+            z-index: -1;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body onclick="startMusic()">
+
+    <!-- Arka Plan Müziği (Love Me Not melodisi veya benzer telifsiz bir alternatif için yönlendirme yeri) -->
+    <!-- Not: Kendi istediğiniz .mp3 dosyasını buraya ekleyebilirsiniz, şu an online bir piyano melodisi bağlıdır -->
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Tavşanların Alanı -->
+    <div class="stage" id="rabbit-stage">
+        <div class="banner">Her gün bana güneş olduğunuz için teşekkürler! ☀️</div>
+        
+        <!-- Sol Tavşan -->
+        <div class="rabbit rabbit-left">
+            <div class="eye eye-left"></div>
+            <div class="eye eye-right"></div>
+            <div class="cheek cheek-left"></div>
+            <div class="cheek cheek-right"></div>
+            <div class="arm"></div>
+        </div>
+
+        <!-- Sağ Tavşan -->
+        <div class="rabbit rabbit-right">
+            <div class="eye eye-left"></div>
+            <div class="eye eye-right"></div>
+            <div class="cheek cheek-left"></div>
+            <div class="cheek cheek-right"></div>
+            <div class="arm"></div>
+        </div>
+    </div>
+
+    <!-- Sevgiliye Güzel Söz -->
+    <div class="love-text">
+        "Dünyadaki tüm güzel çizgi filmler bir yana, seninle geçirdiğim her bir saniye hayatımın en tatlı sahnesi... Kalbimin en güzel köşesi, iyi ki varsın."
+    </div>
+
+    <!-- Onay Kutusu -->
+    <label class="checkbox-container">
+        <input type="checkbox" id="love-check" onchange="toggleHug(this)">
+        <div class="custom-box"></div>
+        <span class="box-label">Onaylıyorum</span>
+    </label>
+
+    <script>
+        let musicStarted = false;
+
+        function startMusic() {
+            if (!musicStarted) {
+                const music = document.getElementById('bg-music');
+                // Gerçek projede buraya 'Love Me Not' mp3 linkini veya dosya adını koyabilirsiniz
+                music.volume = 0.4;
+                music.play().catch(e => console.log("Müzik yükleniyor..."));
+                musicStarted = true;
+            }
+        }
+
+        function toggleHug(checkbox) {
+            const stage = document.getElementById('rabbit-stage');
+            if (checkbox.checked) {
+                stage.classList.add('hugged');
+                startHeartRain();
+            } else {
+                stage.classList.remove('hugged');
+            }
+        }
+
+        // Kutucuk işaretlendiğinde ekrandan kalpler yağdıran fonksiyon
+        function startHeartRain() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.innerHTML = '❤';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.top = '-5vh';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    heart.style.opacity = Math.random();
+                    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 5000);
+                }, i * 150);
+            }
+        }
+    </script>
+</body>
+</html>
